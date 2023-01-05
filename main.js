@@ -8,18 +8,24 @@ cnv.height = 600;
 let wins = 0;
 let losses = 0;
 
-let array = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+let player = 1;
 
-// Drawing the Lines
-requestAnimationFrame(drawAll);
+let array = [
+    [0, 0, 0], 
+    [0, 0, 0], 
+    [0, 0, 0]
+];
 
-function drawAll() {
+let mouseX, mouseY;
+
+
+function drawAll(player) {
     // Draw Background
     drawBackground();
-
-    requestAnimationFrame(drawAll);
+    checkArray();
 }
 
+// Drawing the Lines
 function drawBackground() {
     // Draw vert line 1
     ctx.linewidth = 2;
@@ -45,6 +51,56 @@ function drawBackground() {
     ctx.stroke();
 }
 
+function checkArray(){
+    for (let i=0; i < array.length; i++) {
+        for (let t=0; t < array[i].length; t++) {
+            if (array[i][t] === 1) {
+                drawX(i, t);
+            } else if (array[i][t] === -1) {
+                drawO(i, t)
+            }
+        }
+    }
+}
+
+function drawX(row, column) {
+    let startX, startY;
+    if (row === 0) {
+        
+    } else if (row === 1) {
+        
+    } else if (row === 2) {
+        
+    }
+
+    if (column === 0) {
+        
+    } else if (column === 1) {
+        
+    } else if (column === 2) {
+        
+    }
+}
+
+function drawO(row, column) {
+    let x, y;
+    if (row === 0) {
+        y = 100;
+    } else if (row === 1) {
+        y = 300;
+    } else if (row === 2) {
+        y = 500;
+    }
+
+    if (column === 0) {
+        x = 100;
+    } else if (column === 1) {
+        x = 300;
+    } else if (column === 2) {
+        x = 500;
+    }
+}
+
 // Event Listener
 window.addEventListener("click", checkMousePosition);
 function checkMousePosition(event) {
@@ -54,4 +110,55 @@ function checkMousePosition(event) {
     // Calc mouse coordinates using mouse event and canvas location info
     mouseX = event.clientX - cnvRect.left;
     mouseY = event.clientY - cnvRect.top;
+
+    // Change Array
+    if (player === 1) {
+        let i = 0;
+        let t = 0;
+        if (mouseX <= 200) {
+            i = 0;
+        } else if (mouseX <= 400) {
+            i = 1;
+        } else if (mouseX <= 600) {
+            i = 2;
+        }
+
+        if (mouseY <= 200) {
+            t = 0;
+        } else if (mouseY <= 400) {
+            t = 1;
+        } else if (mouseY <= 600) {
+            t = 2;
+        }
+        
+        array[i][t] = 1;
+    } else {
+        let i = 0;
+        let t = 0;
+        if (mouseX <= 200) {
+            i = 0;
+        } else if (mouseX <= 400) {
+            i = 1;
+        } else if (mouseX <= 600) {
+            i = 2;
+        }
+
+        if (mouseY <= 200) {
+            t = 0;
+        } else if (mouseY <= 400) {
+            t = 1;
+        } else if (mouseY <= 600) {
+            t = 2;
+        }
+        
+        array[i][t] = -1;
+    }
+
+    if (player === 1) {
+        player = 0;
+    } else {
+        player = 1;
+    }
+    // Draw All
+    drawAll();
 }
