@@ -14,6 +14,7 @@ let array = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
 requestAnimationFrame(drawAll);
 
 function drawAll() {
+    // Draw Background
     drawBackground();
 
     requestAnimationFrame(drawAll);
@@ -31,12 +32,26 @@ function drawBackground() {
     // Draw vert line 2
     ctx.moveTo(400, 0);
     ctx.lineTo(400, 600);
+    ctx.stroke();
     
     // Draw hori line 1
     ctx.moveTo(0, 200);
     ctx.lineTo(600, 200);
+    ctx.stroke();
 
     // Draw hori line 2
     ctx.moveTo(0, 400);
     ctx.lineTo(600, 400);
+    ctx.stroke();
+}
+
+// Event Listener
+window.addEventListener("click", checkMousePosition);
+function checkMousePosition(event) {
+    // Get rectangle info about canvas location
+    let cnvRect = cnv.getBoundingClientRect(); 
+      
+    // Calc mouse coordinates using mouse event and canvas location info
+    mouseX = event.clientX - cnvRect.left;
+    mouseY = event.clientY - cnvRect.top;
 }
