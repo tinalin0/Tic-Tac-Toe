@@ -7,12 +7,23 @@
 
     <link rel="stylesheet" href="style.css">
     <script defer src="main.js"></script>
+    <script defer src="gui.js"></script>
     
     <title>Tic-Tac-Toe</title>
 </head>
 <body>
-    <canvas id="tic-tac-canvas"></canvas>
-    <p>Wins: <span id="win-num"></span></p>
-    <p>Losses: <span id="loss-num"></span></p>
+    <canvas id="tic-tac-canvas"></canvas> <br>
+    <button id="pvp-btn">Player vs. Player</button>
+    <button id="machine-btn">Player vs. Machine</button>
+    <div id="pvp-div">
+        <p>Player 1: <span id="p1-num"></span></p>
+        <p>Player 2: <span id="p2-num"></span></p>
+        <p>Draws: <span id="draw-1"></span></p>
+    </div>
+    <div id="machine-div">
+        <p>Wins: <span id="win-num"></span></p>
+        <p>Losses: <span id="loss-num"></span></p>
+        <p>Draws: <span id="draw-2"></span></p>
+    </div>
 </body>
 </html>

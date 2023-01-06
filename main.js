@@ -5,10 +5,16 @@ cnv.width = 600;
 cnv.height = 600;
 
 // Variables
+let player1Wins = 0;
+let player2Wins = 0;
+let draws1 = 0;
+
 let wins = 0;
 let losses = 0;
+let draws2 = 0;
 
 let player = 1;
+let gui = "player";
 
 let array = [
     [0, 0, 0], 
@@ -18,8 +24,15 @@ let array = [
 
 let mouseX, mouseY;
 
+// Player Elements
+let p1NumEl = document.getElementById("p1-num");
+let p2NumEl = document.getElementById("p2-num");
+let drawNumEl1 = document.getElementById("draw-1")
+
+// Machine Elements
 let winNumEl = document.getElementById("win-num");
 let lossNumEl = document.getElementById("loss-num");
+let drawNumEl2 = document.getElementById("draw-2");
 
 // OnLoad
 window.addEventListener("load", drawBackground);
@@ -102,12 +115,10 @@ function checkWin() {
                 ctx.stroke();
             }
             if (array[i][0] === 1) {
-                wins++;
-                winNumEl.innerHTML = wins;
+                updateScore();
                 performResetAfterDelay();
             } else if (array[i][0] === -1) {
-                losses++;
-                lossNumEl.innerHTML = losses;
+                updateScore();
                 performResetAfterDelay();
             }
         }
@@ -139,12 +150,10 @@ function checkWin() {
                 ctx.stroke();
             }
             if (array[i][0] === 1) {
-                wins++;
-                winNumEl.innerHTML = wins;
+                updateScore();
                 performResetAfterDelay();
             } else if (array[i][0] === -1) {
-                losses++;
-                lossNumEl.innerHTML = losses;
+                updateScore();
                 performResetAfterDelay();
             }
         }
@@ -175,19 +184,56 @@ function checkWin() {
         ctx.lineTo(25, 575);
         ctx.stroke();
         if (array[0][2] === 1) {
-            wins++;
-            winNumEl.innerHTML = wins;
+            updateScore();
             performResetAfterDelay();
         } else if (array[0][2] === -1) {
-            losses++;
-            lossNumEl.innerHTML = losses;
+            updateScore();
             performResetAfterDelay();
         }
     }
 }
 
 function checkSquareFill() {
-    
+    let squaresFilled = 0;
+    for(let i = 0; i < array.length; i++) {
+        for (let t = 0; t < array[i].length; t++) {
+            if (array[i][t] !== 0) {
+                squaresFilled++;
+            }
+        }
+    }
+
+    if (squaresFilled === 9) {
+        if (gui === "player") {
+            draws1++;
+            drawNumEl1.innerHTML = draws1;
+        } else {
+            draws2++;
+            drawNumEl2.innerHTML = draws2;
+        }
+        performResetAfterDelay();
+    }
+}
+
+// Helper Functions
+function updateScore() {
+    if (gui === "player") {
+        if (player === 1) {
+            player1Wins++;
+            p1NumEl.innerHTML = player1Wins;
+        } else {
+            player2Wins++;
+            p2NumEl.innerHTML = player2Wins;
+        }
+    } else {
+        if (player === 1) {
+            wins++;
+            winNumEl.innerHTML = wins;
+        } else {
+            losses++;
+            lossNumEl.innerHTML = losses;
+        }
+    }
 }
 
 function drawX(row, column) {
@@ -250,10 +296,9 @@ function drawO(row, column) {
     ctx.closePath();
 }
 
+// Reseting everything
 function performResetAfterDelay() {
-    // 1000 ms delay
-    window.setTimeout(resetEverything, 1000)
-  
+    window.setTimeout(resetEverything, 500);
 }
   
 function resetEverything() {
@@ -263,10 +308,48 @@ function resetEverything() {
         [0, 0, 0]
     ];
     drawBackground();
+    player = 1;
 }
 
 // Event Listener
-window.addEventListener("click", checkMousePosition);
+window.addEventListener("click", mouseHandler);
+function mouseHandler(event) {
+    let sym = checkMousePosition(event);
+    // Check Mode
+    if (gui === "player") {
+        // Check player
+        if (player === 1) {
+            if (array[sym[0]][sym[1]] === 0) {
+                array[sym[0]][sym[1]] = 1;
+            }
+        } else if (player === 0) {
+            if (array[sym[0]][sym[1]] === 0) {
+                array[sym[0]][sym[1]] = -1;
+            }
+        }
+        // Change players
+        if (player === 1) {
+            player = 0;
+        } else {
+            player = 1;
+        }
+    } else if (gui === "machine") {
+        if (array[sym[0]][sym[1]] === 0) {
+            array[sym[0]][sym[1]] = 1;
+        }
+        let mac = machineChooses();
+        array[mac[0]][mac[1]] = -1;
+    }
+
+    console.log(mouseX);
+    console.log(mouseY);
+    console.log(array);
+    console.log(player);
+    // Draw All
+    drawAll();
+}
+
+// Helper function
 function checkMousePosition(event) {
     // Get rectangle info about canvas location
     let cnvRect = cnv.getBoundingClientRect(); 
@@ -274,13 +357,13 @@ function checkMousePosition(event) {
     // Calc mouse coordinates using mouse event and canvas location info
     mouseX = event.clientX - cnvRect.left;
     mouseY = event.clientY - cnvRect.top;
-    
+
+    // Variables
+    let i = -1;
+    let t = -1;
+        
     if (mouseX <= 600) {
         if (mouseY <= 600) {
-            // Variables
-            let i = 0;
-            let t = 0;
-            
             // Mouse X's position
             if (mouseX <= 200) {
                 t = 0;
@@ -290,7 +373,7 @@ function checkMousePosition(event) {
                 t = 2;
             }
 
-            // Mouse Y's position
+            // Mouse Y's position 
             if (mouseY <= 200) {
                 i = 0;
             } else if (mouseY <= 400) {
@@ -298,32 +381,21 @@ function checkMousePosition(event) {
             } else if (mouseY <= 600) {
                 i = 2;
             }
-                
-            // Check player
-            if (player === 1) {
-                if (array[i][t] === 0) {
-                    array[i][t] = 1;
-                }
-            } else if (player === 0) {
-                if (array[i][t] === 0) {
-                    array[i][t] = -1;
-                }
-            
-            }
-
-            // Change players
-            if (player === 1) {
-                player = 0;
-            } else {
-                player = 1;
-            }
-
-            console.log(mouseX);
-            console.log(mouseY);
-            console.log(array);
-            console.log(player);
-            // Draw All
-            drawAll();
         }
     }
+    if (i >= 0 && t >= 0) {
+        console.log(i, t)
+        return [i, t];
+    }
+}
+
+function machineChooses() {
+    let i = 0;
+    let t = 0;
+    while (array[i][t] === 0) {
+        i = Math.floor(Math.random() * (3 - 1) ) + 1;
+        t = Math.floor(Math.random() * (3 - 1) ) + 1;
+    }
+    console.log(i, t);
+    return [i, t];
 }
