@@ -325,30 +325,31 @@ function mouseHandler(event) {
         if (player === 1) {
             if (array[sym[0]][sym[1]] === 0) {
                 array[sym[0]][sym[1]] = 1;
+                player = 0;
             }
-        } else if (player === 0) {
+        } else {
             if (array[sym[0]][sym[1]] === 0) {
                 array[sym[0]][sym[1]] = -1;
+                player = 1;
             }
-        }
-        // Change players
-        if (player === 1) {
-            player = 0;
-        } else {
-            player = 1;
         }
     } else if (gui === "machine") {
         if (array[sym[0]][sym[1]] === 0) {
             array[sym[0]][sym[1]] = 1;
+            player = 0;
         }
+    } else {
         let mac = machineChooses();
-        array[mac[0]][mac[1]] = -1;
+        if (array[mac[0]][mac[1]] === 0) {
+            array[mac[0]][mac[1]] = -1;
+            player = 1;
+        }
     }
 
-    console.log(mouseX);
-    console.log(mouseY);
+    // console.log(mouseX);
+    // console.log(mouseY);
     console.log(array);
-    console.log(player);
+    // console.log(player);
     // Draw All
     drawAll();
 }
@@ -388,7 +389,6 @@ function checkMousePosition(event) {
         }
     }
     if (i >= 0 && t >= 0) {
-        console.log(i, t)
         return [i, t];
     }
 }
@@ -399,7 +399,7 @@ function machineChooses() {
     while (array[i][t] === 0) {
         i = Math.floor(Math.random() * (3 - 1) ) + 1;
         t = Math.floor(Math.random() * (3 - 1) ) + 1;
+        console.log(i, t);
     }
-    console.log(i, t);
     return [i, t];
 }
