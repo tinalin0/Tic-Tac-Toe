@@ -41,7 +41,10 @@ function drawAll() {
     // Draw Background
     drawBackground();
     checkArray();
-    checkWin();
+    let returnNum = checkWin();
+    if (returnNum === 0) {
+        return;
+    }
     checkSquareFill();
 }
 
@@ -149,10 +152,10 @@ function checkWin() {
                 ctx.lineTo(500, 575);
                 ctx.stroke();
             }
-            if (array[i][0] === 1) {
+            if (array[0][i] === 1) {
                 updateScore();
                 performResetAfterDelay();
-            } else if (array[i][0] === -1) {
+            } else if (array[0][i] === -1) {
                 updateScore();
                 performResetAfterDelay();
             }
@@ -309,6 +312,7 @@ function resetEverything() {
     ];
     drawBackground();
     player = 1;
+    return 0;
 }
 
 // Event Listener
