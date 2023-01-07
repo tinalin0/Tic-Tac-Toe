@@ -43,7 +43,7 @@ function drawAll() {
     checkArray();
     let returnNum = checkWin();
     if (returnNum === 0) {
-        return;
+        return 0;
     }
     checkSquareFill();
 }
@@ -120,9 +120,11 @@ function checkWin() {
             if (array[i][0] === 1) {
                 updateScore();
                 performResetAfterDelay();
+                return;
             } else if (array[i][0] === -1) {
                 updateScore();
                 performResetAfterDelay();
+                return;
             }
         }
     }
@@ -155,9 +157,11 @@ function checkWin() {
             if (array[0][i] === 1) {
                 updateScore();
                 performResetAfterDelay();
+                return;
             } else if (array[0][i] === -1) {
                 updateScore();
                 performResetAfterDelay();
+                return;
             }
         }
     }
@@ -171,13 +175,13 @@ function checkWin() {
         ctx.lineTo(575, 575);
         ctx.stroke();
         if (array[0][0] === 1) {
-            wins++;
-            winNumEl.innerHTML = wins;
+            updateScore();
             performResetAfterDelay();
+            return;
         } else if (array[0][0] === -1) {
-            losses++;
-            lossNumEl.innerHTML = losses;
+            updateScore();
             performResetAfterDelay();
+            return;
         }
     } else if (array[0][2] === array[1][1] && array[0][2] === array[2][0] && array[0][2] !== 0) {
         ctx.lineWidth = 2;
@@ -189,9 +193,11 @@ function checkWin() {
         if (array[0][2] === 1) {
             updateScore();
             performResetAfterDelay();
+            return;
         } else if (array[0][2] === -1) {
             updateScore();
             performResetAfterDelay();
+            return;
         }
     }
 }
@@ -221,7 +227,7 @@ function checkSquareFill() {
 // Helper Functions
 function updateScore() {
     if (gui === "player") {
-        if (player === 1) {
+        if (player === 0) {
             player1Wins++;
             p1NumEl.innerHTML = player1Wins;
         } else {
@@ -229,7 +235,7 @@ function updateScore() {
             p2NumEl.innerHTML = player2Wins;
         }
     } else {
-        if (player === 1) {
+        if (player === 0) {
             wins++;
             winNumEl.innerHTML = wins;
         } else {
@@ -320,6 +326,7 @@ window.addEventListener("click", mouseHandler);
 function mouseHandler(event) {
     let sym = checkMousePosition(event);
     // Check Mode
+    // PVP
     if (gui === "player") {
         // Check player
         if (player === 1) {
@@ -333,23 +340,20 @@ function mouseHandler(event) {
                 player = 1;
             }
         }
+        // P v Machine
     } else if (gui === "machine") {
         if (array[sym[0]][sym[1]] === 0) {
             array[sym[0]][sym[1]] = 1;
             player = 0;
+            let returnNum = drawAll();
+            if (returnNum === 0) {
+                return;
+            }
         }
-    } else {
         let mac = machineChooses();
-        if (array[mac[0]][mac[1]] === 0) {
-            array[mac[0]][mac[1]] = -1;
-            player = 1;
-        }
+        array[mac.i][mac.t] = -1;
+        player = 1;
     }
-
-    // console.log(mouseX);
-    // console.log(mouseY);
-    console.log(array);
-    // console.log(player);
     // Draw All
     drawAll();
 }
@@ -367,8 +371,8 @@ function checkMousePosition(event) {
     let i = -1;
     let t = -1;
         
-    if (mouseX <= 600) {
-        if (mouseY <= 600) {
+    if (mouseX <= 600 && mouseX >= 0) {
+        if (mouseY <= 600 && mouseY >= 0) {
             // Mouse X's position
             if (mouseX <= 200) {
                 t = 0;
@@ -394,12 +398,21 @@ function checkMousePosition(event) {
 }
 
 function machineChooses() {
-    let i = 0;
-    let t = 0;
-    while (array[i][t] === 0) {
-        i = Math.floor(Math.random() * (3 - 1) ) + 1;
-        t = Math.floor(Math.random() * (3 - 1) ) + 1;
-        console.log(i, t);
+    let zeroArray = [];
+    for (let i = 0; i < array.length; i++) {
+        for (let t = 0; t < array[i].length; t++) {
+            if (array[i][t] === 0) {
+                zeroArray.push(zeroWhere(i, t));
+            }
+        }
     }
-    return [i, t];
+    let randNum = Math.floor(Math.random() * zeroArray.length);
+    return zeroArray[randNum];
+}
+
+function zeroWhere(i, t) {
+    return{
+        i: i,
+        t: t,
+    }
 }
